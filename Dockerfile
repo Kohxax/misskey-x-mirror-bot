@@ -10,7 +10,7 @@ COPY . .
 RUN npx tsc
  
 # Production
-FROM node:22-alpine
+FROM node:22
  
 ENV TZ=Asia/Tokyo
  
