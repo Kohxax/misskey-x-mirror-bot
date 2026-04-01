@@ -18,32 +18,22 @@ export class TwitterClient {
     }
 
     async init(): Promise<void> {
-        try {
-            const raw = await fs.readFile(COOKIES_PATH, "utf-8");
-            const cookies = JSON.parse(raw);
+        const raw = await fs.readFile(COOKIES_PATH, "utf-8");
+        const cookies = JSON.parse(raw);
 
-            // Cookie-Editor形式の場合、name=value形式の文字列配列に変換
-            const cookieStrings = cookies.map(
-                (c: any) => `${c.name}=${c.value}; Domain=${c.domain}; Path=${c.path}`
-            );
-            await this.scraper.setCookies(cookieStrings);
+        const cookieStrings = cookies.map(
+            (c: any) => `${c.name}=${c.value}; Domain=${c.domain}; Path=${c.path}`
+        );
+        await this.scraper.setCookies(cookieStrings);
 
-            if (await this.scraper.isLoggedIn()) {
-                console.log("[Twitter] Cookieでログイン済み");
-                return;
-            }
-        } catch {
-            // Cookieファイルなし or 無効 → ログインへ
+        const loggedIn = await this.scraper.isLoggedIn();
+        console.log("[Twitter] isLoggedIn:", loggedIn);
+
+        if (!loggedIn) {
+            throw new Error("Cookie認証失敗。Cookieを再エクスポートしてください。");
         }
 
-        console.log("[Twitter] ログイン中...");
-        await this.scraper.login(this.username, this.password, this.email);
-
-        // Cookieをキャッシュ
-        const cookies = await this.scraper.getCookies();
-        await fs.mkdir(path.dirname(COOKIES_PATH), { recursive: true });
-        await fs.writeFile(COOKIES_PATH, JSON.stringify(cookies, null, 2));
-        console.log("[Twitter] ログイン完了・Cookie保存");
+        console.log("[Twitter] Cookieでログイン済み");
     }
 
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
