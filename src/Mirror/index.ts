@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { Tweet } from "agent-twitter-client";
+import { Tweet } from "@the-convocation/twitter-scraper";
 import { TwitterClient } from "../Twitter/Client/index.js";
 import { MisskeyClient } from "../Misskey/Client/index.js";
 import { getLastTweetId, setLastTweetId } from "./store.js";

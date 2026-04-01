@@ -1,4 +1,4 @@
-import { Scraper, Tweet } from "agent-twitter-client";
+import { Scraper, Tweet } from "@the-convocation/twitter-scraper";
 import fs from "fs/promises";
 import path from "path";
 
