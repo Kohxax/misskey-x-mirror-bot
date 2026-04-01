@@ -39,6 +39,7 @@ MISSKEY_TOKEN=発行したアクセストークン
 TWITTER_AUTH_TOKEN=auth_tokenの値
 TWITTER_CT0=ct0の値
 TARGET_TWITTER_USERNAME=ミラーしたいXアカウント（@なし）
+DISCORD_WEBHOOK_URL=cookie失効時にdiscordに通知するためのwebhookURL（なくても動作しますが、推奨）
 ```
 
 ### 4. dataディレクトリを作成
