@@ -104,7 +104,7 @@ function buildNoteText(tweet: Tweet, username: string): string {
     const body = tweet.text ?? "";
     const tweetUrl = `https://twitter.com/${username}/status/${tweet.id}`;
     const prefix = tweet.isReply ? `💬 リプライ\n` : "";
-    return `${prefix}${body}\n\n🔗 ${tweetUrl}`;
+    return `${prefix}${body}\n\n ${tweetUrl}`;
 }
 
 function sleep(ms: number): Promise<void> {
