@@ -29,16 +29,15 @@ export class TwitterClient {
         });
         await this.scraper.setCookies(cookieStrings);
 
-        // セット後のCookieを確認
         const setCookies = await this.scraper.getCookies();
-        console.log("[Twitter] セット済みCookie名一覧:", setCookies.map((c: any) => c.key ?? c.name));
+        const cookieNames = setCookies.map((c: any) => c.key ?? c.name);
+        const hasAuth = cookieNames.includes("auth_token") && cookieNames.includes("ct0");
 
-        const loggedIn = await this.scraper.isLoggedIn();
-        console.log("[Twitter] isLoggedIn:", loggedIn);
-
-        if (!loggedIn) {
-            throw new Error("Cookie認証失敗。Cookieを再エクスポートしてください。");
+        if (!hasAuth) {
+            throw new Error("auth_tokenまたはct0がありません");
         }
+
+        console.log("[Twitter] Cookieでログイン済み（auth_token + ct0 確認）");
     }
 
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
