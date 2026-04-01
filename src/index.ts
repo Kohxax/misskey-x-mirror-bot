@@ -17,9 +17,7 @@ const targetUsername = process.env.TARGET_TWITTER_USERNAME;
 if (!origin || !token) {
     throw new Error("MISSKEY_INSTANCEとMISSKEY_TOKENが.envに設定されていません");
 }
-if (!twitterUsername || !twitterPassword || !twitterEmail) {
-    throw new Error("TWITTER_USERNAME / TWITTER_PASSWORD / TWITTER_EMAIL が未設定です");
-}
+
 if (!targetUsername) {
     throw new Error("TARGET_TWITTER_USERNAMEが未設定です");
 }
@@ -29,7 +27,7 @@ const stream = new Misskey.Stream(origin, { token });
 const followback = new Followback(misskeyClient, stream);
 followback.start();
 
-const twitterClient = new TwitterClient(twitterUsername, twitterPassword, twitterEmail);
+const twitterClient = new TwitterClient();
 
 // Twitter Cookieログインを初期化してからMirror開始
 twitterClient.init().then(() => {

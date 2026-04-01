@@ -6,15 +6,9 @@ const COOKIES_PATH = path.resolve("data/twitter-cookies.json");
 
 export class TwitterClient {
     private scraper: Scraper;
-    private username: string;
-    private password: string;
-    private email: string;
 
-    constructor(username: string, password: string, email: string) {
+    constructor() {
         this.scraper = new Scraper();
-        this.username = username;
-        this.password = password;
-        this.email = email;
     }
 
     async init(): Promise<void> {
