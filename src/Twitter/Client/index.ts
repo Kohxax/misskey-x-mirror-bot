@@ -22,7 +22,10 @@ export class TwitterClient {
         const cookies = JSON.parse(raw);
 
         const cookieStrings = cookies.map(
-            (c: any) => `${c.name}=${c.value}; Domain=${c.domain}; Path=${c.path}`
+            (c: any) => {
+                const domain = c.domain.replace("x.com", "twitter.com").replace(".x.com", ".twitter.com");
+                return `${c.name}=${c.value}; Domain=${domain}; Path=${c.path}`;
+            }
         );
         await this.scraper.setCookies(cookieStrings);
 
