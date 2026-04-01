@@ -1,8 +1,5 @@
 import { Scraper, Tweet } from "@the-convocation/twitter-scraper";
 import fs from "fs/promises";
-import path from "path";
-
-const COOKIES_PATH = path.resolve("data/twitter-cookies.json");
 
 export class TwitterClient {
     private scraper: Scraper;
