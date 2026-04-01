@@ -29,7 +29,7 @@ export class TwitterClient {
 
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
         const tweets: Tweet[] = [];
-        for await (const tweet of this.scraper.getTweetsAndReplies(username, count)) {
+        for await (const tweet of this.scraper.getTweets(username, count)) {
             tweets.push(tweet);
         }
         return tweets;
