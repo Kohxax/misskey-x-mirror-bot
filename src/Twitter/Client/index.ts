@@ -21,13 +21,17 @@ export class TwitterClient {
         const raw = await fs.readFile(COOKIES_PATH, "utf-8");
         const cookies = JSON.parse(raw);
 
-        const cookieStrings = cookies.map(
-            (c: any) => {
-                const domain = c.domain.replace("x.com", "twitter.com").replace(".x.com", ".twitter.com");
-                return `${c.name}=${c.value}; Domain=${domain}; Path=${c.path}`;
-            }
-        );
+        const cookieStrings = cookies.map((c: any) => {
+            const domain = c.domain
+                .replace("x.com", "twitter.com")
+                .replace(".x.com", ".twitter.com");
+            return `${c.name}=${c.value}; Domain=${domain}; Path=${c.path}`;
+        });
         await this.scraper.setCookies(cookieStrings);
+
+        // セット後のCookieを確認
+        const setCookies = await this.scraper.getCookies();
+        console.log("[Twitter] セット済みCookie名一覧:", setCookies.map((c: any) => c.key ?? c.name));
 
         const loggedIn = await this.scraper.isLoggedIn();
         console.log("[Twitter] isLoggedIn:", loggedIn);
@@ -35,8 +39,6 @@ export class TwitterClient {
         if (!loggedIn) {
             throw new Error("Cookie認証失敗。Cookieを再エクスポートしてください。");
         }
-
-        console.log("[Twitter] Cookieでログイン済み");
     }
 
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
