@@ -20,8 +20,8 @@ export class TwitterClient {
         }
 
         await this.scraper.setCookies([
-            `auth_token=${authToken}; Domain=.twitter.com; Path=/`,
-            `ct0=${ct0}; Domain=.twitter.com; Path=/`,
+            `auth_token=${authToken}; Domain=.x.com; Path=/`,
+            `ct0=${ct0}; Domain=.x.com; Path=/`,
         ]);
 
         console.log("[Twitter] Cookieセット完了");
