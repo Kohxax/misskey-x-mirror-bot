@@ -21,23 +21,23 @@ export class TwitterClient {
         const raw = await fs.readFile(COOKIES_PATH, "utf-8");
         const cookies = JSON.parse(raw);
 
-        const cookieStrings = cookies.map((c: any) => {
-            const domain = c.domain
-                .replace("x.com", "twitter.com")
-                .replace(".x.com", ".twitter.com");
-            return `${c.name}=${c.value}; Domain=${domain}; Path=${c.path}`;
-        });
-        await this.scraper.setCookies(cookieStrings);
+        // auth_tokenとct0だけ抽出して渡す
+        const authToken = cookies.find((c: any) => c.name === "auth_token")?.value;
+        const ct0 = cookies.find((c: any) => c.name === "ct0")?.value;
+        const twid = cookies.find((c: any) => c.name === "twid")?.value;
 
-        const setCookies = await this.scraper.getCookies();
-        const cookieNames = setCookies.map((c: any) => c.key ?? c.name);
-        const hasAuth = cookieNames.includes("auth_token") && cookieNames.includes("ct0");
-
-        if (!hasAuth) {
-            throw new Error("auth_tokenまたはct0がありません");
+        if (!authToken || !ct0) {
+            throw new Error("auth_tokenまたはct0が見つかりません");
         }
 
-        console.log("[Twitter] Cookieでログイン済み（auth_token + ct0 確認）");
+        const cookieStrings = [
+            `auth_token=${authToken}; Domain=.twitter.com; Path=/`,
+            `ct0=${ct0}; Domain=.twitter.com; Path=/`,
+            ...(twid ? [`twid=${twid}; Domain=.twitter.com; Path=/`] : []),
+        ];
+
+        await this.scraper.setCookies(cookieStrings);
+        console.log("[Twitter] Cookieセット完了");
     }
 
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
