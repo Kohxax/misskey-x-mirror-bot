@@ -18,11 +18,15 @@ export class TwitterClient {
     }
 
     async init(): Promise<void> {
-        // キャッシュされたCookieがあればそれを使う
         try {
             const raw = await fs.readFile(COOKIES_PATH, "utf-8");
             const cookies = JSON.parse(raw);
-            await this.scraper.setCookies(cookies);
+
+            // Cookie-Editor形式の場合、name=value形式の文字列配列に変換
+            const cookieStrings = cookies.map(
+                (c: any) => `${c.name}=${c.value}; Domain=${c.domain}; Path=${c.path}`
+            );
+            await this.scraper.setCookies(cookieStrings);
 
             if (await this.scraper.isLoggedIn()) {
                 console.log("[Twitter] Cookieでログイン済み");
@@ -42,9 +46,6 @@ export class TwitterClient {
         console.log("[Twitter] ログイン完了・Cookie保存");
     }
 
-    /**
-     * 指定ユーザーの直近ツイートを取得（リプライ含む）
-     */
     async getRecentTweets(username: string, count: number = 20): Promise<Tweet[]> {
         const tweets: Tweet[] = [];
         for await (const tweet of this.scraper.getTweetsAndReplies(username, count)) {
