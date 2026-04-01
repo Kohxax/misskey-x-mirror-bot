@@ -18,25 +18,18 @@ export class TwitterClient {
     }
 
     async init(): Promise<void> {
-        const raw = await fs.readFile(COOKIES_PATH, "utf-8");
-        const cookies = JSON.parse(raw);
-
-        // auth_tokenとct0だけ抽出して渡す
-        const authToken = cookies.find((c: any) => c.name === "auth_token")?.value;
-        const ct0 = cookies.find((c: any) => c.name === "ct0")?.value;
-        const twid = cookies.find((c: any) => c.name === "twid")?.value;
+        const authToken = process.env.TWITTER_AUTH_TOKEN;
+        const ct0 = process.env.TWITTER_CT0;
 
         if (!authToken || !ct0) {
-            throw new Error("auth_tokenまたはct0が見つかりません");
+            throw new Error("TWITTER_AUTH_TOKEN / TWITTER_CT0 が未設定です");
         }
 
-        const cookieStrings = [
+        await this.scraper.setCookies([
             `auth_token=${authToken}; Domain=.twitter.com; Path=/`,
             `ct0=${ct0}; Domain=.twitter.com; Path=/`,
-            ...(twid ? [`twid=${twid}; Domain=.twitter.com; Path=/`] : []),
-        ];
+        ]);
 
-        await this.scraper.setCookies(cookieStrings);
         console.log("[Twitter] Cookieセット完了");
     }
 
